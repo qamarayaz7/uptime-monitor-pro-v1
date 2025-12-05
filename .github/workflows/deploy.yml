@@ -1,4 +1,4 @@
-name: Deploy Uptime Monitor
+name: Terraform CI/CD - Uptime Monitor
 
 on:
   push:
@@ -10,17 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repo
+    # 1️⃣ Checkout your repository
+    - name: Checkout repo
       uses: actions/checkout@v3
 
+    # 2️⃣ Setup Terraform
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.14.0 
 
+    # 3️⃣ Terraform Init
     - name: Terraform Init
+      working-directory: ./uptime-monitor-pro
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
       run: terraform init
 
+    # 4️⃣ Terraform Plan
     - name: Terraform Plan
+      working-directory: ./uptime-monitor-pro
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
       run: terraform plan
 
+    # 5️⃣ Terraform Apply
     - name: Terraform Apply
+      working-directory: ./uptime-monitor-pro
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
       run: terraform apply -auto-approve
