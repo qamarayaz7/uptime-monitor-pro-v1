@@ -1,48 +1,32 @@
-name: Terraform CI/CD - Uptime Monitor
+name: Deploy to AWS on Push
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  terraform:
+  deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-    # 1️⃣ Checkout your repository
-    - name: Checkout repo
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    # 2️⃣ Setup Terraform
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.14.0 
 
-    # 3️⃣ Terraform Init
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
     - name: Terraform Init
-      working-directory: ./uptime-monitor-pro-v1
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
       run: terraform init
 
-    # 4️⃣ Terraform Plan
     - name: Terraform Plan
-      working-directory: ./uptime-monitor-pro-v1
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
       run: terraform plan
 
-    # 5️⃣ Terraform Apply
     - name: Terraform Apply
-      working-directory: ./uptime-monitor-pro-v1
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
       run: terraform apply -auto-approve
