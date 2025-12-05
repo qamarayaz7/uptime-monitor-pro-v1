@@ -3,11 +3,11 @@ import json
 import boto3
 
 sns = boto3.client("sns")
-TOPIC_ARN = "arn:aws:sns:us-east-1:216989099527:uptime-monitor-alerts"  # change later
+TOPIC_ARN = "arn:aws:sns:us-east-1:216989099527:uptime-monitor-alerts"  
 
 def lambda_handler(event, context):
     http = urllib3.PoolManager()
-    url = "http://jaklshfsh.com"  # change later
+    url = "https//google.com"  # change later
 
     try:
         response = http.request("GET", url)
